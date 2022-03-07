@@ -1,0 +1,86 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}
+	{{ appTitle }}
+	-  PROCOST
+{% endblock %}
+{% block content %}
+	<div class="app-title">
+		<div>
+            {% if isEdit %}
+			<h1><i class="fa fa-users"></i>&nbsp;Edition d'un métier</h1>
+            {% else %}
+                <h1><i class="fa fa-users"></i>&nbsp;Création d'un métier</h1>
+            {% endif %}			
+		</div>
+		<ul class="app-breadcrumb breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{path('dashboard')}}">
+					<i class="fa fa-home fa-lg"></i>
+				</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{path('jobs')}}">Métiers</a>
+			</li>
+			<li class="breadcrumb-item">{% if isEdit %}
+            Edition d'un métier
+            {% else %}
+                Création d'un métier
+                {% endif %}
+            </li>
+		</ul>
+	</div>
+	<div class="tile">
+		{% if app.flashes %}
+			{% for flash_type, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="alert alert-{{ flash_type }}" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endfor %}
+		{% endif %}
+
+		<form class="form-horizontal">
+			<section>
+				<h3>Informations générales</h3>
+				<div class="row mt-4">
+					<div class="offset-md-4 col-md-8">
+						<div class="form-group row">
+							{{ form_start(form) }}
+
+
+							<div class="col-md-9 offset-3">
+								<div class="form-group">
+									{{ form_label(form.label) }}
+									{{ form_widget(form.label) }}
+									<div class="form-error">
+										{{ form_errors(form.label) }}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<hr/>
+			<div class="row">
+				<div class="col-sm-12 col-md-6 text-center">
+					{{ form_row(form.submit) }}
+				</div>
+				<div class="col-sm-12 col-md-6 text-center">
+					{% if isEdit %}
+						<form method="post" action="{{ path("jobs_delete", {'id': job.id}) }}">
+							<input type="hidden" name="_method" value="SUP">
+							<input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ job.id) }}">
+							<button type="submit" class="btn btn-danger btn-lg" onsubmit="return confirm('Confirmer la suppression ?')">
+								<i class="fa fa-trash"></i>Supprimer
+							</button>
+						</form>
+					{% endif %}
+				</div>
+			</div>
+			{{ form_end(form) }}
+		</div>
+	</form>
+</div>{% endblock %}

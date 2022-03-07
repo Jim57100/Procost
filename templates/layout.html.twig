@@ -1,0 +1,69 @@
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+	{{parent()}}
+
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}"/>
+{% endblock %}
+{% block body %}
+	{% block navbar %}
+		<!-- Navbar -->
+		<header class="app-header">
+			<a class="app-header__logo" href="{{path('dashboard')}}">Procost</a>
+			<a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
+			<!-- Navbar Right Menu-->
+			<ul class="app-nav">
+				<li class="app-search">
+					<a href="login.html" class="btn btn-info">Se déconnecter</a>
+				</li>
+			</ul>
+		</header>
+	{% endblock %}
+	{% block sidebar %}
+		<!-- Sidebar menu-->
+		<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+		<aside class="app-sidebar">
+			<div class="app-sidebar__user">
+				<img class="app-sidebar__user-avatar" src="{{asset('img/user.jpg')}}" alt="User Image">
+				<div>
+					<p class="app-sidebar__user-name">{{'John Doe'}}</p>
+					<p class="app-sidebar__user-designation">{{'Manager'}}</p>
+				</div>
+			</div>
+			<ul class="app-menu">
+				<li>
+					<a class="app-menu__item active" href="{{path('dashboard')}}">
+						<i class="app-menu__icon fa fa-dashboard"></i>
+						<span class="app-menu__label">Tableau de bord</span>
+					</a>
+				</li>
+				<li>
+					<a class="app-menu__item" href="{{path('projects')}}">
+						<i class="app-menu__icon fa fa-laptop"></i>
+						<span class="app-menu__label">Projets</span>
+					</a>
+				</li>
+				<li>
+					<a class="app-menu__item" href="{{path('employees')}}">
+						<i class="app-menu__icon fa fa-users"></i>
+						<span class="app-menu__label">Employés</span>
+					</a>
+				</li>
+				<li>
+					<a class="app-menu__item" href="{{path('jobs')}}">
+						<i class="app-menu__icon fa fa-book"></i>
+						<span class="app-menu__label">Métiers</span>
+					</a>
+				</li>
+			</ul>
+		</aside>
+	{% endblock %}
+    <main class="app-content">
+      {% block content %}{% endblock %}
+    </main>
+	{% block footer %}
+		<footer class="main-footer">
+			&copy; 2019 - PROCOST
+		</footer>
+	{% endblock %}
+{% endblock %}
+

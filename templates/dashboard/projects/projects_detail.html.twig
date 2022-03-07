@@ -1,0 +1,116 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Suivi d'un projet{% endblock %}
+     
+
+{% block content %}
+    <div class="app-title">
+        <div>
+            <h1>
+                <i class="fa fa-tasks"></i>&nbsp;{{ appTitle }}</h1>
+        </div>
+        <ul class="app-breadcrumb breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{path('dashboard')}}">
+                    <i class="fa fa-home fa-lg"></i>
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{path('projects')}}">Projets</a>
+            </li>
+            <li class="breadcrumb-item">{{ appTitle }}</li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="tile">
+                <table class="table table-striped table-bordered table-sm">
+                    <tbody>
+                        <tr>
+                            <th>Nom</td>
+                            <td>Projet 1</td>
+                        </tr>
+                        <tr>
+                            <th>Description</td>
+                            <td>une description</td>
+                        </tr>
+                        <tr>
+                            <th>Prix de vente</td>
+                            <td>300 €</td>
+                        </tr>
+                        <tr>
+                            <th>Date de début</td>
+                            <td>04/03/2022</td>
+                        </tr>
+                        <tr>
+                            <th>Date de livraison</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a href="{{path('project_edit')}}" class="btn btn-info">
+                    <i class="fa fa-pencil"></i>Modifier
+                </a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="tile pb-5">
+                <h3 class="tile-title">Historique des temps de production</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Projet</th>
+                                <th>Temps</th>
+                                <th>Date de saisie</th>
+                                <th>Coût total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Nom du projet</td>
+                                <td>4 jours</td>
+                                <td>23-04-2018</td>
+                                <td>1 400 €</td>
+                            </tr>
+                            <tr>
+                                <td>Nom du projet</td>
+                                <td>4 jours</td>
+                                <td>23-04-2018</td>
+                                <td>1 400 €</td>
+                            </tr>
+                            <tr>
+                                <td>Nom du projet</td>
+                                <td>4 jours</td>
+                                <td>23-04-2018</td>
+                                <td>1 400 €</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr/>
+                <nav class="float-right">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">1<span class="sr-only">(current)</span></span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a></li>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
