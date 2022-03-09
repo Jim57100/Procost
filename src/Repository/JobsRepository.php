@@ -3,11 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Jobs;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Jobs|null find($id, $lockMode = null, $lockVersion = null)
@@ -50,6 +51,32 @@ class JobsRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('j')
         ->getQuery();
+    }
+
+    public function findOneWithEmployees(int $id): bool
+    {
+        $qb = $this->createQueryBuilder('j')
+            ->where('j.id = :id')
+            ->setParameter('id', $id);
+
+        $this->addJoinEmployees($qb);
+
+        if ($qb->getQuery()->getOneOrNullResult() === null) {
+            dd(false);
+            return false;
+        } else {
+            dd(true);
+            return true;
+        }
+        
+    }
+
+    private function addJoinEmployees(QueryBuilder $qb): void
+    {
+        $qb
+            ->addSelect('e')
+            ->innerJoin('e.jobs', 'e')
+        ;
     }
     // /**
     //  * @return Jobs[] Returns an array of Jobs objects

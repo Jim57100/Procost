@@ -26,14 +26,14 @@ class JobsType extends AbstractType
                     new Assert\NotBlank()
                 ]
             ])
-            ->add('submit', Type\SubmitType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ],
-                'label' => 'Enregistrer'
-            ])
-            // ->add('delete', SubmitType::class, ['label'=> 'delete'])
-            // ->getForm()
+            // ->add('submit', Type\SubmitType::class, [
+            //     'attr' => [
+            //         'class' => 'btn btn-primary'
+            //     ],
+            //     'label' => 'Enregistrer'
+            // ])
+            // ->add('delete', Type\SubmitType::class, ['label'=> 'Supprimer'])
+            // ->add('_token', Type\HiddenType::class)
         ;
     }
 
@@ -41,6 +41,9 @@ class JobsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Jobs::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+
         ]);
     }
 }

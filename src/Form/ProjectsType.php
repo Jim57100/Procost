@@ -4,9 +4,7 @@ namespace App\Form;
 
 use App\Entity\Projects;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type as Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,19 +14,19 @@ class ProjectsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class,[
+            ->add('name', Type\TextType::class,[
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
                     'maxlength' => '50'
                 ],
-                'label' => 'Nom',
+                'label' => 'Nom du projet',
                 'constraints' => [
                     new Assert\Length(['min' => 2, 'max' => 50]),
                     new Assert\NotBlank()
                 ]
             ])
-            ->add('description', TextType::class, [
+            ->add('description', Type\TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
@@ -40,7 +38,7 @@ class ProjectsType extends AbstractType
                     new Assert\NotBlank()
                 ]
             ])
-            ->add('salePrice', MoneyType::class, [
+            ->add('salePrice', Type\MoneyType::class, [
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -49,18 +47,15 @@ class ProjectsType extends AbstractType
                     new Assert\Positive()
                 ]
             ])
-            ->add('startDate', DateType::class, [
+            ->add('startDate', Type\DateType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    // 'class' => 'form-control',
                 ],
                 'label' => 'Date de début',
-                'constraints' => []
-            ])
-            ->add('deliveryDate', DateType::class, [
-                'attr' => [],
-                'label' => 'Date de livraison',
-                'constraints' => []
-            ])
+                'constraints' => [
+                    new Assert\NotBlank()
+                ]
+            ]) 
         ;
     }
 

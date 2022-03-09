@@ -5,6 +5,7 @@ namespace App\Repository;
 use Doctrine\ORM\Query;
 use App\Entity\Projects;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -50,6 +51,26 @@ class ProjectsRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('j')
         ->getQuery();
+    }
+
+    public function findAllTimesByIdJoinedToProject(int $id) :array 
+    {
+        $qb = $this->createQueryBuilder('projects')
+        ->where('projects.id = :id')
+        ->setParameter('id', $id);
+
+        $this->addJoinTimes($qb);
+
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
+
+    private function addJoinTimes(QueryBuilder $qb): void
+    {
+        $qb
+            ->addSelect('t')
+            ->leftJoin('p.times', 't')
+        ;
     }
     // /**
     //  * @return Projects[] Returns an array of Projects objects

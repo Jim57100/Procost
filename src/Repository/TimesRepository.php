@@ -3,10 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Times;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Times|null find($id, $lockMode = null, $lockVersion = null)
@@ -45,6 +46,11 @@ class TimesRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllWithPagination() :Query
+    {
+        return $this->createQueryBuilder('e')
+        ->getQuery();
+    }
     // /**
     //  * @return Times[] Returns an array of Times objects
     //  */

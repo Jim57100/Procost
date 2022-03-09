@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Times;
+use App\Form\TimesType;
 use App\Entity\Employees;
+use Doctrine\ORM\EntityManager;
 use App\Repository\EmployeesRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EmployeesController extends AbstractController
 {
@@ -27,8 +31,17 @@ class EmployeesController extends AbstractController
     }
 
     #[Route('/employees/detail/{id}', name: 'employees_detail')]
-    public function detail(Employees $employee): Response
+    public function detail(Employees $employee, Request $request, EntityManagerInterface $em): Response
     {   
+        $times = new Times();
+        $form = $this->createForm(TimesType::class, $times);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $em->persist($times);
+            $em->flush();
+            $this->addFlash('success', 'Votre temps est ajouté avec succès !');
+        }
+
         return $this->render('dashboard/employees/employees_detail.html.twig', [
             'appTitle' => 'Employés détails',
             'employee' => $employee
@@ -42,4 +55,10 @@ class EmployeesController extends AbstractController
             'appTitle' => 'Employés édition',
         ]);
     }
+
+    public function addTimes()
+    {
+        
+    }
+
 }
