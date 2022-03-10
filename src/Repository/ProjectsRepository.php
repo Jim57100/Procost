@@ -47,31 +47,28 @@ class ProjectsRepository extends ServiceEntityRepository
         }
     }
 
+   
     public function findAllWithPagination() :Query
     {
-        return $this->createQueryBuilder('j')
-        ->getQuery();
+        return $this
+            ->createQueryBuilder('t')
+            ->getQuery();
     }
 
-    public function findAllTimesByIdJoinedToProject(int $id) :array 
-    {
-        $qb = $this->createQueryBuilder('projects')
-        ->where('projects.id = :id')
-        ->setParameter('id', $id);
+    //DO NOT WORK ???
+    // public function findAllWithPagination(int $id) :Query
+    // {
+    //     return $this
+    //         ->createQueryBuilder('p')
+    //         ->addSelect('t')
+    //         ->join('p.times', 't')
+    //         ->where('t.id = :id')
+    //         ->setParameter('id', $id)
+    //         ->orderBy('t.createdAt', 'DESC')
+    //         ->getQuery();
+    // }
 
-        $this->addJoinTimes($qb);
-
-        $query = $qb->getQuery();
-        return $query->getResult();
-    }
-
-    private function addJoinTimes(QueryBuilder $qb): void
-    {
-        $qb
-            ->addSelect('t')
-            ->leftJoin('p.times', 't')
-        ;
-    }
+ 
     // /**
     //  * @return Projects[] Returns an array of Projects objects
     //  */

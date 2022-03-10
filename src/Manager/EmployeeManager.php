@@ -6,6 +6,7 @@ namespace App\Manager;
 
 use App\Entity\Employees;
 use App\Entity\Times;
+use App\Repository\EmployeesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class EmployeeManager
@@ -17,6 +18,7 @@ final class EmployeeManager
     # code...
   }
 
+  //THIS IS OK
   public function addTime(Employees $employees, Times $times) {
     $employees->addTime($times);
 
@@ -24,5 +26,16 @@ final class EmployeeManager
     $this->em->flush();
     
   }
+
+    //DO NOT WORK ???
+    // public function doMath(Employees $employees, EmployeesRepository $repo)
+    // {
+    //     $employeeCost = $employees->getCost();
+    //     $sumTimes = array_sum($repo->findAllTimesById($employees->getId()));
+    //     $totalCost = $employeeCost * $sumTimes;
+        
+    //     return $totalCost;
+    // }
+
 
 }

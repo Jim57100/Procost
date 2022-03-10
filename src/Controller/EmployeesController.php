@@ -6,7 +6,6 @@ use App\Entity\Times;
 use App\Form\TimesType;
 use App\Entity\Employees;
 use App\Form\EmployeeType;
-use Doctrine\ORM\EntityManager;
 use App\Manager\EmployeeManager;
 use App\Repository\EmployeesRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,11 +18,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EmployeesController extends AbstractController
 {
+  
     public function __construct(
         private EmployeeManager $employeeManager,
         private EntityManagerInterface $em,
         private EmployeesRepository $repo
     ){}
+    
 
     #[Route('/employees', name: 'employees')]
     public function index(PaginatorInterface $paginatorInterface, Request $request): Response
@@ -52,8 +53,8 @@ class EmployeesController extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
             
             $this->employeeManager->addTime($employee, $times);
-            // $em->persist($times);
-            // $em->flush();
+            $this->em->persist($times);
+            $this->em->flush();
             $this->addFlash('success', 'Votre temps est ajouté avec succès !');
         }
 
@@ -67,7 +68,7 @@ class EmployeesController extends AbstractController
 
     #[Route('/employees/edit/create', name: 'employees_create', methods: ['GET', 'POST'])]
     #[Route('/employees/edit/{id}', name: 'employees_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function editOrAddEmployee(Employees $employee = null, Request $request, EntityManagerInterface $em): Response
+    public function editOrAddEmployee(Employees $employee = null, Request $request): Response
     {
         if(!$employee) {
             $employee = new Employees();
@@ -78,8 +79,8 @@ class EmployeesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            $em->persist($employee);
-            $em->flush();
+            $this->em->persist($employee);
+            $this->em->flush();
 
             $this->addFlash('success', 'L\'envoi a bien été effectué');
         
@@ -97,15 +98,14 @@ class EmployeesController extends AbstractController
     #[Route('/employees/delete/{id}', name: 'employees_delete', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function delete(Employees $employees, Request $request): Response
     {
-
-        if ($employees === null) {
+        if (!$employees === null) {
             throw new NotFoundHttpException();
         }
 
         if ($this->isCsrfTokenValid("SUP" . $employees->getId(), $request->get('_token'))) {
             $this->em->remove($employees);
             $this->em->flush();
-            return $this->redirectToRoute('projects');
+            return $this->redirectToRoute('employees');
         } 
     }
 }

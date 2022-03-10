@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProjectsController extends AbstractController
 {
+    
     #[Route('/projects', name: 'projects')]
     public function index(ProjectsRepository $repo, PaginatorInterface $paginatorInterface, Request $request): Response
     {
@@ -30,22 +31,31 @@ class ProjectsController extends AbstractController
         ]);
     }
 
+
     #[Route('/projects/detail/{id}', name: 'project_detail')]
     public function detail(Projects $project, TimesRepository $repo, PaginatorInterface $paginatorInterface, Request $request): Response
     {
+        //THIS IS IN WORK
+        // $arrayTime = $employeeRepo->findAllTimesById();
+        // $totalCost = $employeeManager->doMath();
 
-
-        $times = $paginatorInterface->paginate(
+         $times = $paginatorInterface->paginate(
             $repo->findAllWithPagination(), 
             $request->query->getInt('page', 1), 
             10 /*limit per page*/
         );
 
+        // $times = $paginatorInterface->paginate(
+        //     $repo->findAllWithPagination($project->getId()), 
+        //     $request->query->getInt('page', 1), 
+        //     10 /*limit per page*/
+        // );
+
         return $this->render('dashboard/projects/projects_detail.html.twig', [
             'appTitle' => 'Details',
             'project' => $project,
-            'times' => $times
-           
+            'times' => $times,
+            // 'totalCost' => $totalCost
         ]);
     }
 
@@ -77,10 +87,10 @@ class ProjectsController extends AbstractController
         ]);
     }
 
+
     #[Route('/project/delete/{id}', name: 'project_delete', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function delete(Projects $projects, EntityManagerInterface $em, Request $request): Response
     {
-
         if ($projects === null) {
             throw new NotFoundHttpException();
         }

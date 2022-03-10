@@ -52,33 +52,19 @@ class EmployeesRepository extends ServiceEntityRepository
         ->getQuery();
     }
 
-    
-    // /**
-    //  * @return Employees[] Returns an array of Employees objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    //DO NOT WORK ???
+    // public function findAllTimesById(int $id)
+    // {
+    //     return $this
+    //         ->createQueryBuilder('e')
+    //         ->addSelect('t')
+    //         ->join('e.times', 't')
+    //         ->where('t.id = $id')
+    //         ->setParameter('id', $id)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
-    /*
-    public function findOneBySomeField($value): ?Employees
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+
+
 }

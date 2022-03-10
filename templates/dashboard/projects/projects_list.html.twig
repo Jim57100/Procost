@@ -42,7 +42,7 @@
 							<td>{{ project.startDate | date('d/m/Y')}}</td>
 							<td>{{ project.deliveryDate | date('d/m/Y')}}</td>
 							<td class="d-flex">
-								<a href="{{ path('project_detail', {'id' : project.id}) }}" class="btn btn-secondary btn-md">
+								<a href="{{ path('project_detail', {'id' : project.id}) }}" class="btn btn-secondary btn-md align-self-center mr-1">
 									<i class="fa fa-eye mr-0"></i>
 								</a>
 								<form method="POST" action="{{ path('project_delete', {'id' : project.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">

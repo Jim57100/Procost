@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\TimesRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TimesRepository;
+use Symfony\Component\Validator\Constraints\Date;
 
 #[ORM\Entity(repositoryClass: TimesRepository::class)]
 class Times
@@ -21,6 +23,14 @@ class Times
 
     #[ORM\ManyToOne(targetEntity: Projects::class, inversedBy: 'times')]
     private $projects;
+
+    #[ORM\Column(type: 'date')]
+    private $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +69,18 @@ class Times
     public function setProjects(?Projects $projects): self
     {
         $this->projects = $projects;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
