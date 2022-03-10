@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProjectsController extends AbstractController
 {
@@ -49,8 +50,8 @@ class ProjectsController extends AbstractController
     }
 
 
-    #[Route('/projects/edit/create', name: 'project_create', methods: ['POST'])]
-    #[Route('/projects/edit/{id}', name: 'project_edit', methods: ['GET', 'POST'])]
+    #[Route('/projects/edit/create', name: 'project_create', methods: ['GET', 'POST'])]
+    #[Route('/projects/edit/{id}', name: 'project_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function editProject(Projects $projects = null, Request $request, EntityManagerInterface $em): Response
     {
         if(!$projects) {
@@ -80,9 +81,8 @@ class ProjectsController extends AbstractController
     public function delete(Projects $projects, EntityManagerInterface $em, Request $request): Response
     {
 
-        if (!$projects) {
-            $this->addFlash('warning', 'Le projet n\'a pas été trouvé');
-            return $this->redirectToRoute('projects');
+        if ($projects === null) {
+            throw new NotFoundHttpException();
         }
 
         if ($this->isCsrfTokenValid("SUP" . $projects->getId(), $request->get('_token'))) {

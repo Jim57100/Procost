@@ -26,7 +26,7 @@ class ProjectsType extends AbstractType
                     new Assert\NotBlank()
                 ]
             ])
-            ->add('description', Type\TextType::class, [
+            ->add('description', Type\TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
@@ -63,6 +63,7 @@ class ProjectsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Projects::class,
+            'required' => true
         ]);
     }
 }
