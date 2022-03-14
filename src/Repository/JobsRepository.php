@@ -47,10 +47,10 @@ class JobsRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllWithPagination() :Query
+    public function findAllWithPagination(): Query
     {
         return $this->createQueryBuilder('j')
-        ->getQuery();
+            ->getQuery();
     }
 
     public function findOneWithEmployees(int $id): bool
@@ -68,42 +68,12 @@ class JobsRepository extends ServiceEntityRepository
             dd(true);
             return true;
         }
-        
     }
 
     private function addJoinEmployees(QueryBuilder $qb): void
     {
         $qb
             ->addSelect('e')
-            ->innerJoin('e.jobs', 'e')
-        ;
+            ->innerJoin('e.jobs', 'e');
     }
-    // /**
-    //  * @return Jobs[] Returns an array of Jobs objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('j.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Jobs
-    {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

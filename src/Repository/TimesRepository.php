@@ -46,10 +46,27 @@ class TimesRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllWithPagination() :Query
+    public function findAllWithPagination(): Query
     {
         return $this->createQueryBuilder('e')
-        ->getQuery();
+            ->getQuery();
     }
 
+    public function countProductionTimeForOneProject(int $id): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('SUM(p.devTime) as productionTime')
+            ->where('p.project = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function countAllProductionTime(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select("SUM(c.times) as productionTime")
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

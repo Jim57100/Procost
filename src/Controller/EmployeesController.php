@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Times;
 use App\Form\TimesType;
-use App\Entity\Employees;
+use App\Entity as Entity;
 use App\Form\EmployeeType;
 use App\Manager\EmployeeManager;
+use App\Repository\TimesRepository;
 use App\Repository\EmployeesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -22,7 +22,8 @@ class EmployeesController extends AbstractController
     public function __construct(
         private EmployeeManager $employeeManager,
         private EntityManagerInterface $em,
-        private EmployeesRepository $repo
+        private EmployeesRepository $repo,
+        private TimesRepository $tr
     ){}
     
 
@@ -42,9 +43,10 @@ class EmployeesController extends AbstractController
 
     
     #[Route('/employees/detail/{id}', name: 'employees_detail')]
-    public function detail(Employees $employee, Request $request): Response
+    public function detail(Entity\Employees $employee, Request $request, PaginatorInterface $paginatorInterface): Response
     {   
-        $times = new Times();
+        
+        $times = new Entity\Times();
 
         $form = $this->createForm(TimesType::class, $times);
         
@@ -58,20 +60,26 @@ class EmployeesController extends AbstractController
             $this->addFlash('success', 'Votre temps est ajouté avec succès !');
         }
 
-        return $this->render('dashboard/employees/employees_detail.html.twig', [
-            'appTitle' => 'Employés détails',
-            'form' => $form->createView(),
-            'employee' => $employee
+        $pagination = $paginatorInterface->paginate(
+            $this->tr->findAllWithPagination(), 
+            $request->query->getInt('page', 1), 
+            10 /*limit per page*/
+        );
+
+        return $this->render('dashboard/employees/employees_detail.html.twig', [ 
+            'form'       => $form->createView(),
+            'employee'   => $employee,
+            'pagination' => $pagination
         ]);
     }
 
 
     #[Route('/employees/edit/create', name: 'employees_create', methods: ['GET', 'POST'])]
     #[Route('/employees/edit/{id}', name: 'employees_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function editOrAddEmployee(Employees $employee = null, Request $request): Response
+    public function editOrAddEmployee(Entity\Employees $employee = null, Request $request): Response
     {
         if(!$employee) {
-            $employee = new Employees();
+            $employee = new Entity\Employees();
         }  
 
         $form = $this->createForm(EmployeeType::class, $employee);
@@ -87,16 +95,16 @@ class EmployeesController extends AbstractController
         }
 
         return $this->render('dashboard/employees/employees_form.html.twig', [
-            'appTitle' => 'Edition d\'un employé',
-            'employee' => $employee,
-            'form' => $form->createView(),
-            'isEdit' => $employee->getId() !== null
+            'appTitle'  => 'Edition d\'un employé',
+            'employee'  => $employee,
+            'form'      => $form->createView(),
+            'isEdit'    => $employee->getId() !== null
         ]);
     }
 
 
     #[Route('/employees/delete/{id}', name: 'employees_delete', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    public function delete(Employees $employees, Request $request): Response
+    public function delete(Entity\Employees $employees, Request $request): Response
     {
         if (!$employees === null) {
             throw new NotFoundHttpException();
@@ -108,4 +116,6 @@ class EmployeesController extends AbstractController
             return $this->redirectToRoute('employees');
         } 
     }
+
+
 }

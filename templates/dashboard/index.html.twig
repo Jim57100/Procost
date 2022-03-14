@@ -1,5 +1,20 @@
 {% extends "layout.html.twig" %}
-
+{% set productionCost = 1 %}
+{% set sellingPrice = 1 %}
+{% set rentability = 1 %}
+{# Calcul taux de livraison #}
+{% if (nbFinishedProjects.projects + nbInProgress.projects) == 0 %}
+	{% set deliveryRate = (nbFinishedProjects.projects / 1)*100 %}
+{% else %}
+	{% set deliveryRate = (nbFinishedProjects.projects / (nbFinishedProjects.projects + nbInProgress.projects))*100 %}
+{% endif %}
+{# Calcul Rentabilité #}
+{% if totalSellingPrices is not null  %}
+	{% set productionCost = (productionCost) %}
+	{% set sellingPrice = (totalSellingPrices) %}
+{% endif %}
+{% set rentability = (1 - (productionCost / sellingPrice))*100 %}
+{# Fin des calculs #}
 {% block title %}
 	PROCOST
 {% endblock %}
@@ -27,7 +42,11 @@
 						<div class="info">
 							<p class="text-muted text-sm text-uppercase">Projets en cours</p>
 							<p>
-								<strong>{{'11'}}</strong>
+								{% if nbInProgress.projects is null %}
+									<strong>0</strong>
+								{% else %}
+									<strong>{{ nbInProgress.projects }}</strong>
+								{% endif %}
 							</p>
 						</div>
 					</div>
@@ -38,7 +57,11 @@
 						<div class="info">
 							<p class="text-muted text-sm text-uppercase">Projets livrés</p>
 							<p>
-								<strong>{{'76'}}</strong>
+								{% if nbFinishedProjects.projects is null %}
+									<strong>0</strong>
+								{% else %}
+									<strong>{{ nbFinishedProjects.projects }}</strong>
+								{% endif %}
 							</p>
 						</div>
 					</div>
@@ -49,7 +72,7 @@
 						<div class="info">
 							<p class="text-muted text-sm text-uppercase">Employés</p>
 							<p>
-								<strong>{{'34'}}</strong>
+								<strong>{{ nbEmployees.count }}</strong>
 							</p>
 						</div>
 					</div>
@@ -60,7 +83,7 @@
 						<div class="info">
 							<p class="text-muted text-sm text-uppercase">Jours de production</p>
 							<p>
-								<strong>{{'267'}}</strong>
+								<strong>{{ productionTime.productionTime }}</strong>
 							</p>
 						</div>
 					</div>
@@ -73,7 +96,7 @@
 						<div class="card-body">
 							<p class="text-muted">
 								<i class="fa fa-database mr-2 text-primary"></i>
-								{{'70'}}% RENTABLE
+								{{ rentability|round(0,'floor') }}% RENTABLE
 							</p>
 							<div class="embed-responsive embed-responsive-16by9">
 								<canvas id="ratio-chart" class="embed-responsive-item"></canvas>
@@ -87,7 +110,7 @@
 						<div class="card-body">
 							<p class="text-muted">
 								<i class="fa fa fa-check-square-o mr-2 text-primary"></i>
-								{{'35'}}% Livrés
+								{{ deliveryRate|round(0,'floor') }}% Livrés
 							</p>
 							<div class="embed-responsive embed-responsive-16by9">
 								<canvas id="delivered-chart" class="embed-responsive-item"></canvas>
@@ -99,24 +122,28 @@
 					<div class="card">
 						<div class="card-header text-center text-uppercase">Top employé</div>
 						<div class="card-body">
-							<div class="text-center">
-								<img src="img/ui-zac.jpg" class="rounded-circle" width="58">
-								<p class="mt-2">
-									<strong>{{'Zac'}}
-										{{'Producteur'}}</strong>
-								</p>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<p class="small mt">EMPLOYÉ DEPUIS</p>
-									<p>{{'Février 2012'}}</p>
-								</div>
-								<div class="col-md-6">
-									<p class="small mt">COÛT TOTAL</p>
-									<p>{{'34 567'}}
-										€</p>
-								</div>
-							</div>
+							{% for employee in bestEmployee %}
+								{% if employee.maxCost %}
+									<div class="text-center">
+										<img src="img/ui-zac.jpg" class="rounded-circle" width="58">
+										<p class="mt-2">
+											<strong>{{ employee.firstName }}
+												{{ employee.lastName }}</strong>
+										</p>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<p class="small mt">EMPLOYÉ DEPUIS</p>
+											<p>{{ employee.hireDate | date('d/m/Y') }}</p>
+										</div>
+										<div class="col-md-6">
+											<p class="small mt">COÛT TOTAL</p>
+											<p>{{ employee.maxCost }}
+												€</p>
+										</div>
+									</div>
+								{% endif %}
+							{% endfor %}
 						</div>
 					</div>
 				</div>
@@ -135,61 +162,23 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<th>
-								<a href="#">Mon projet</a>
-							</th>
-							<th>18/03/2018</th>
-							<th>20 000 €</th>
-							<th>3 200 €</th>
-							<th>
-								<span class="badge badge-success">OUI</span>
-							</th>
-						</tr>
-						<tr>
-							<th>
-								<a href="#">Mon projet</a>
-							</th>
-							<th>18/03/2018</th>
-							<th>20 000 €</th>
-							<th>3 200 €</th>
-							<th>
-								<span class="badge badge-success">OUI</span>
-							</th>
-						</tr>
-						<tr>
-							<th>
-								<a href="#">Mon projet</a>
-							</th>
-							<th>18/03/2018</th>
-							<th>20 000 €</th>
-							<th>3 200 €</th>
-							<th>
-								<span class="badge badge-success">OUI</span>
-							</th>
-						</tr>
-						<tr>
-							<th>
-								<a href="#">Mon projet</a>
-							</th>
-							<th>18/03/2018</th>
-							<th>20 000 €</th>
-							<th>3 200 €</th>
-							<th>
-								<span class="badge badge-success">OUI</span>
-							</th>
-						</tr>
-						<tr>
-							<th>
-								<a href="#">Mon projet</a>
-							</th>
-							<th>18/03/2018</th>
-							<th>20 000 €</th>
-							<th>3 200 €</th>
-							<th>
-								<span class="badge badge-danger">NON</span>
-							</th>
-						</tr>
+						{% for last in lastProjects %}
+							<tr>
+								<th>
+									<a href="{{ path('project_detail', {'id' : last.id}) }}">{{ last.name }}</a>
+								</th>
+								<th>{{ last.startDate | date('d/m/Y')}}</th>
+								<th>{{ last.salePrice }}€</th>
+								<th>{{ last.cost }}</th>
+								<th>
+									{% if last.deliveryDate is not null %}
+										<span class="badge badge-success">OUI</span>
+									{% else %}
+										<span class="badge badge-danger">NON</span>
+									{% endif %}
+								</th>
+							</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
@@ -198,54 +187,27 @@
 			<div class="tile">
 				<h2 class="tile-title text-center">Temps de production</h2>
 				<ul class="list-group">
-					<li class="list-group-item">
-						<a href="#">James Brown</a>
-						a travaillé sur
-						<a href="#">Projet 1</a>
-						<div class="text-muted font-italic text-right">4 jours</div>
-					</li>
-					<li class="list-group-item">
-						<a href="#">James Brown</a>
-						a travaillé sur
-						<a href="#">Projet 1</a>
-						<div class="text-muted font-italic text-right">4 jours</div>
-					</li>
-					<li class="list-group-item">
-						<a href="#">James Brown</a>
-						a travaillé sur
-						<a href="#">Projet 1</a>
-						<div class="text-muted font-italic text-right">4 jours</div>
-					</li>
-					<li class="list-group-item">
-						<a href="#">James Brown</a>
-						a travaillé sur
-						<a href="#">Projet 1</a>
-						<div class="text-muted font-italic text-right">4 jours</div>
-					</li>
-					<li class="list-group-item">
-						<a href="#">James Brown</a>
-						a travaillé sur
-						<a href="#">Projet 1</a>
-						<div class="text-muted font-italic text-right">4 jours</div>
-					</li>
-					<li class="list-group-item">
-						<a href="#">James Brown</a>
-						a travaillé sur
-						<a href="#">Projet 1</a>
-						<div class="text-muted font-italic text-right">4 jours</div>
-					</li>
+					{% for time in lastTimes %}
+						<li class="list-group-item">
+							<a href="{{path('employees_detail', {'id' : time.id}) }}">{{ time.firstName }}</a>
+							a travaillé sur
+							<a href="{{ path('project_detail', {'id': time.projectsId}) }}">{{ time.name }}</a>
+							<div class="text-muted font-italic text-right">{{ time.times }}
+								jours</div>
+						</li>
+					{% endfor %}
 				</ul>
 			</div>
 		</div>
 	</div>
 {% endblock %}
 {% block javascripts %}
-    {{parent()}}
-    <!-- Specific page JS -->
+	{{parent()}}
+	<!-- Specific page JS -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js" integrity="sha256-oSgtFCCmHWRPQ/JmR4OoZ3Xke1Pw4v50uh6pLcu+fIc=" crossorigin="anonymous"></script>
 	<script>
 		var ratioData = [70, 30];
-        var deliveredData = [35, 65];
+var deliveredData = [35, 65];
 	</script>
-	<script src="{{ asset('js/dashboard.js')}}"></script>    
+	<script src="{{ asset('js/dashboard.js')}}"></script>
 {% endblock %}

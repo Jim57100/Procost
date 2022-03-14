@@ -20,7 +20,6 @@
 		</ul>
 	</div>
 	<div class="tile pb-5">
-
 		{% for flash_type, messages in app.flashes %}
 			{% for message in messages %}
 				<div class="alert alert-{{ flash_type }}" alert-dismissible fade show role="alert">
@@ -31,7 +30,6 @@
 				</div>
 			{% endfor %}
 		{% endfor %}
-
 		<a href="{{path('jobs_create')}}" class="btn btn-primary float-right mb-4">
 			<i class="fa fa-plus-circle mr-2"></i>Ajouter un métier</a>
 		<div class="table-responsive">
@@ -50,10 +48,12 @@
 								<a href="{{path('jobs_edit', {'id' : job.id } )}}" class="btn btn-info btn-md align-self-center mr-1">
 									<i class="fa fa-pencil mr-0"></i>
 								</a>
-								<form method="POST" action="{{ path('jobs_delete', {'id' : job.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">
-									<input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ job.id) }}">
-									<input type="submit" class="btn btn-danger btn-md" value="x">
-								</form>
+								{% if job.employees is empty %}
+									<form method="POST" action="{{ path('jobs_delete', {'id' : job.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">
+										<input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ job.id) }}">
+										<input type="submit" class="btn btn-danger btn-md" value="x">
+									</form>
+								{% endif %}
 							</td>
 						</tr>
 					{% endfor %}

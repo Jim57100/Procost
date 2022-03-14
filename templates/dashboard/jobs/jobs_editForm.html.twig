@@ -34,7 +34,6 @@
 		</ul>
 	</div>
 	<div class="tile">
-
 		{% for flash_type, messages in app.flashes %}
 			{% for message in messages %}
 				<div class="alert alert-{{ flash_type }}" alert-dismissible fade show role="alert">
@@ -44,7 +43,6 @@
 					</div>
 				{% endfor %}
 			{% endfor %}
-
 			{{ form_start(form) }}
 			<section>
 				<h3>Informations générales</h3>

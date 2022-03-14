@@ -40,19 +40,24 @@
 							<td>{{ project.description }}</td>
 							<td>{{ project.salePrice }}</td>
 							<td>{{ project.startDate | date('d/m/Y')}}</td>
-							<td>{{ project.deliveryDate | date('d/m/Y')}}</td>
+							{% if project.deliveryDate is null %}
+								<td>In Progress</td>
+							{% else %}
+								<td>{{ project.deliveryDate | date('d/m/Y')}}</td>
+							{% endif %}
 							<td class="d-flex">
 								<a href="{{ path('project_detail', {'id' : project.id}) }}" class="btn btn-secondary btn-md align-self-center mr-1">
 									<i class="fa fa-eye mr-0"></i>
 								</a>
-								<form method="POST" action="{{ path('project_delete', {'id' : project.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">
-									<input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ project.id) }}">
-									<input type="submit" class="btn btn-danger btn-md" value="x">
-								</form>
-								{# <form method="POST" action="{{ path('project_delivery', {'id' : project.id}) }}" onsubmit="return confirm('Confirmer la livraison ?')">
-									<input type="submit" class="btn btn-success btn-md" value="v">
-								</form> #}
-
+								{% if project.deliveryDate is null %}
+									<form method="POST" action="{{ path('project_delete', {'id' : project.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">
+										<input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ project.id) }}">
+										<input type="submit" class="btn btn-danger btn-md mr-1" value="x">
+									</form>
+									<form method="POST" action="{{ path('project_delivery', {'id' : project.id}) }}" onsubmit="return confirm('Confirmer la livraison ?')">
+										<input type="submit" name="_delivery" class="btn btn-success btn-md" value="v">
+									</form>
+								{% endif %}
 							</td>
 						</tr>
 					{% endfor %}
@@ -65,6 +70,3 @@
 		</div>
 
 	{% endblock %}
-	{# <a href="{{ path('project_delivery', {'id' : project.id}) }}" class="btn btn-primary btn-sm">
-										<i class="fa fa-check mr-0"></i>
-									</a> #}

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Projects;
 use App\Entity\Times;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,12 +37,13 @@ class TimesType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'class' => Projects::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')
+                        ->where('p.deliveryDate is NULL');
+                },
                 'choice_label' => 'name',
-                // 'query_builder' => function(ProjectsRepository $repo) {
-                //     return $repo->createQueryBuilder('p')->orderBy('p.name', 'DESC');
-                // },
                 'constraints' => [
-                    new Constraints\NotBlank()
+                    new Constraints\NotBlank(),
                 ]
             ]);
     }

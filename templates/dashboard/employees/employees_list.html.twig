@@ -37,29 +37,29 @@
 				<tbody>
 					{% for employee in employees %}
 						<tr>
-            <td>{{ employee.firstName }}</td>    
-            <td>{{ employee.lastName }}</td>    
-						<td>{{ employee.email }}</td>
-						<td>{{ employee.job.label }}</td>
-						<td>{{ employee.cost }}</td>
-						<td>{{ employee.hireDate | date('d/m/Y')}}</td>
-						<td class="d-flex">
-							<a href="{{ path('employees_detail', {'id' : employee.id}) }}" class="btn btn-secondary btn-md align-self-center mr-1">
-								<i class="fa fa-eye mr-0"></i>
-							</a>
+							<td>{{ employee.firstName }}</td>
+							<td>{{ employee.lastName }}</td>
+							<td>{{ employee.email }}</td>
+							<td>{{ employee.job.label }}</td>
+							<td>{{ employee.cost }}</td>
+							<td>{{ employee.hireDate | date('d/m/Y')}}</td>
+							<td class="d-flex">
+								<a href="{{ path('employees_detail', {'id' : employee.id}) }}" class="btn btn-secondary btn-md align-self-center mr-1">
+									<i class="fa fa-eye mr-0"></i>
+								</a>
 								<form method="POST" action="{{ path('employees_delete', {'id' : employee.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">
 									<input type="hidden" name="_token" value="{{ csrf_token('SUP' ~ employee.id) }}">
 									<input type="submit" class="btn btn-danger btn-md" value="x">
 								</form>
-						</td>
-					</tr>
+							</td>
+						</tr>
 					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 		<hr/>
 		<nav class="float-right">
-		{{ knp_pagination_render(employees) }}
-	</nav>
-</div>
+			{{ knp_pagination_render(employees) }}
+		</nav>
+	</div>
 {% endblock %}

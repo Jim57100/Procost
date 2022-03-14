@@ -4,8 +4,9 @@ namespace App\Repository;
 
 use Doctrine\ORM\Query;
 use App\Entity\Projects;
+use App\Entity\Employees;
+use App\Entity\Times;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -47,54 +48,91 @@ class ProjectsRepository extends ServiceEntityRepository
         }
     }
 
-   
-    public function findAllWithPagination() :Query
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function findAllWithPagination(): Query
     {
         return $this
             ->createQueryBuilder('t')
             ->getQuery();
     }
 
-    //DO NOT WORK ???
-    // public function findAllWithPagination(int $id) :Query
-    // {
-    //     return $this
-    //         ->createQueryBuilder('p')
-    //         ->addSelect('t')
-    //         ->join('p.times', 't')
-    //         ->where('t.id = :id')
-    //         ->setParameter('id', $id)
-    //         ->orderBy('t.createdAt', 'DESC')
-    //         ->getQuery();
-    // }
-
- 
-    // /**
-    //  * @return Projects[] Returns an array of Projects objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function getProjectsInProgress(): array
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('COUNT(p.id) as projects')
+            ->where("p.deliveryDate IS NULL ")
             ->getQuery()
-            ->getResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Projects
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function getFinishedProjects(): array
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+            ->select('COUNT(p.id) as projects')
+            ->where("p.deliveryDate IS NOT NULL ")
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function findLastProjects(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.name, p.startDate, p.salePrice, p.deliveryDate, SUM(employees.cost * times.times) as cost')
+            ->join(Employees::class, "employees")
+            ->join(Times::class, "times")
+            ->where('p.id = times.projects')
+            ->andWhere("employees.id = times.employees")
+            ->groupBy('p.name')
+            ->orderBy('p.startDate', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function doMathOnAllSalePrices(): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select("SUM(p.salePrice) as sale")
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function doMathOnTimeCostForSoldedProjects(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.name, p.startDate, p.salePrice, p.deliveryDate, SUM(employees.cost * times.times) as salePrice')
+            ->join(Employees::class, "employees")
+            ->join(Times::class, "times")
+            ->where('p.id = times.projects')
+            ->andWhere("employees.id = times.employees")
+            ->andWhere('p.deliveryDate IS NOT NULL')
+            ->groupBy('p.name')
+            ->orderBy('p.startDate', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
+    }
 }

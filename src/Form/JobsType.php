@@ -26,14 +26,6 @@ class JobsType extends AbstractType
                     new Assert\NotBlank()
                 ]
             ])
-            // ->add('submit', Type\SubmitType::class, [
-            //     'attr' => [
-            //         'class' => 'btn btn-primary'
-            //     ],
-            //     'label' => 'Enregistrer'
-            // ])
-            // ->add('delete', Type\SubmitType::class, ['label'=> 'Supprimer'])
-            // ->add('_token', Type\HiddenType::class)
         ;
     }
 

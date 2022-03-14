@@ -60,27 +60,21 @@
                     <table class="table table-striped table-hover table-sm">
                         <thead>
                             <tr>
-                                <th>Employé</th>
+                                <th>Nom de l'Employé</th>
                                 <th>Temps</th>
                                 <th>Date de saisie</th>
-                                <th>Coût total</th>
+                                <th>Coût total (€)</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {# {% for time in times %}
+                        {% for time in project.times %}
                             <tr>
-                                <td>{{ projectTimes.name }}</td>
-                                <td>{{ projectTimes.times }}</td>
-                                <td>{{ projectTimes.createdAt }}</td>
-                                <td>{{ projectTimes.totalCost }}</td>
+                                <td>{{ time.employees.lastName }}</td>
+                                <td>{{ time.times }}</td>
+                                <td>{{ time.createdAt | date('d/m/Y') }}</td>
+                                <td>{{ time.times * time.employees.cost }}</td>
                             </tr>
-                        {% endfor %} #}
-                            <tr>
-                                <td>Nom du projet</td>
-                                <td>4 jours</td>
-                                <td>23-04-2018</td>
-                                <td>1 400 €</td>
-                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
